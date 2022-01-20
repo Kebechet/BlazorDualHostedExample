@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
 using Microsoft.AspNetCore.Http;
 
 namespace BlazorDualHosted.Server
@@ -23,9 +20,8 @@ namespace BlazorDualHosted.Server
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
 		{
-
-			services.AddControllersWithViews();
 			services.AddRazorPages();
+			services.AddServerSideBlazor();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,16 +40,16 @@ namespace BlazorDualHosted.Server
 			}
 
 			app.UseHttpsRedirection();
-			app.UseBlazorFrameworkFiles();
+			app.UseBlazorFrameworkFiles(new PathString("/app"));
 			app.UseStaticFiles();
-
 			app.UseRouting();
 
-			app.UseBlazorFrameworkFiles(new PathString("/app"));
+
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapRazorPages();
 				endpoints.MapControllers();
+				endpoints.MapFallbackToPage("/_Host");
 				endpoints.MapFallbackToFile("/app/{*path:nonfile}", "app/index.html");
 			});
 		}
