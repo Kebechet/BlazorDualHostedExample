@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace BlazorDualHosted.Server
 {
@@ -48,11 +49,12 @@ namespace BlazorDualHosted.Server
 
 			app.UseRouting();
 
+			app.UseBlazorFrameworkFiles(new PathString("/app"));
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapRazorPages();
 				endpoints.MapControllers();
-				endpoints.MapFallbackToFile("index.html");
+				endpoints.MapFallbackToFile("/app/{*path:nonfile}", "app/index.html");
 			});
 		}
 	}
